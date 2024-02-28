@@ -6,8 +6,16 @@ using System.Text.Json.Serialization;
 
 namespace AzureNamingTool.Services
 {
+    /// <summary>
+    /// Service for managing the import and export of configuration data.
+    /// </summary>
     public class ImportExportService
     {
+        /// <summary>
+        /// Export the configuration data.
+        /// </summary>
+        /// <param name="includeadmin">Flag to include admin settings in the export.</param>
+        /// <returns>The service response containing the exported configuration data.</returns>
         public static async Task<ServiceResponse> ExportConfig(bool includeadmin = false)
         {
             ServiceResponse serviceResponse = new();
@@ -107,9 +115,12 @@ namespace AzureNamingTool.Services
                 configdata.DismissedAlerts = config.DismissedAlerts;
                 configdata.DuplicateNamesAllowed = config.DuplicateNamesAllowed;
                 configdata.ConnectivityCheckEnabled = config.ConnectivityCheckEnabled;
-                configdata.GenerationWebhook = config.GenerationWebhook;                    
+                configdata.GenerationWebhook = config.GenerationWebhook;
                 configdata.ResourceTypeEditingAllowed = config.ResourceTypeEditingAllowed;
                 configdata.AutoIncrementResourceInstance = config.AutoIncrementResourceInstance;
+                configdata.InstructionsEnabled = config.InstructionsEnabled;
+                configdata.GeneratedNamesLogEnabled = config.GeneratedNamesLogEnabled;
+                configdata.LatestNewsEnabled = config.LatestNewsEnabled;
 
                 // Get the security settings
                 if (includeadmin)
@@ -140,6 +151,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Import the configuration data.
+        /// </summary>
+        /// <param name="configdata">The configuration data to import.</param>
+        /// <returns>The service response indicating the success or failure of the import.</returns>
         public static async Task<ServiceResponse> PostConfig(ConfigurationData configdata)
         {
             ServiceResponse serviceResponse = new();
@@ -199,6 +215,18 @@ namespace AzureNamingTool.Services
                 if (GeneralHelper.IsNotNull(configdata.AutoIncrementResourceInstance))
                 {
                     config.AutoIncrementResourceInstance = configdata.AutoIncrementResourceInstance;
+                }
+                if (GeneralHelper.IsNotNull(configdata.InstructionsEnabled))
+                {
+                    config.InstructionsEnabled = configdata.InstructionsEnabled;
+                }
+                if (GeneralHelper.IsNotNull(configdata.GeneratedNamesLogEnabled))
+                {
+                    config.GeneratedNamesLogEnabled = configdata.GeneratedNamesLogEnabled;
+                }
+                if (GeneralHelper.IsNotNull(configdata.LatestNewsEnabled))
+                {
+                    config.LatestNewsEnabled = configdata.LatestNewsEnabled;
                 }
                 var jsonWriteOptions = new JsonSerializerOptions()
                 {
